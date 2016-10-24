@@ -72,7 +72,7 @@ public final class QueryUtils {
 
 
                 // create new Earthquake object using extracted values
-                Earthquake quakeInstance = new Earthquake(mag,loc,date, date);
+                Earthquake quakeInstance = new Earthquake(mag, loc, loc, date, date);
                 earthquakes.add(quakeInstance);
             }
 

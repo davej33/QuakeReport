@@ -9,13 +9,14 @@ public class Earthquake {
     private String mLocation;
     private long mDate;
     private long mTime;
+    private String mProximity;
 
-    public Earthquake(String mag, String location, long date, long time){
+    public Earthquake(String mag, String proximity, String location, long date, long time){
         mMag = mag;
         mLocation = location;
         mDate = date;
         mTime = time;
-
+        mProximity = proximity;
     }
 
     public String getmMag(){ return mMag;}
@@ -27,5 +28,9 @@ public class Earthquake {
 
     public long getmTime() {
         return mTime;
+    }
+
+    public String getmProximity() {
+        return mProximity;
     }
 }
