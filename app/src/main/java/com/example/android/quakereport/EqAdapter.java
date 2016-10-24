@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +29,7 @@ public class EqAdapter extends ArrayAdapter<Earthquake> {
         final Earthquake currentQuake = getItem(position);
 
         TextView mag = (TextView) listItemView.findViewById(R.id.mag_view);
-        mag.setText(NumberFormat.getInstance().format(currentQuake.getmMag()));
+        mag.setText(currentQuake.getmMag());
 
         TextView location = (TextView) listItemView.findViewById(R.id.location_view);
         location.setText(currentQuake.getmLocation());
