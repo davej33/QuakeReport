@@ -66,7 +66,7 @@ public final class QueryUtils {
                 JSONObject quakeProperties = quakeObject.getJSONObject("properties");
 
                 // extract values from quakeProperties object
-                String mag = quakeProperties.getString("mag");
+                Double mag = quakeProperties.getDouble("mag");
                 String loc = quakeProperties.getString("place");
                 long date = quakeProperties.optLong("time");
 
