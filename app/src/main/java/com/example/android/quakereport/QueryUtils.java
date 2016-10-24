@@ -50,33 +50,31 @@ public final class QueryUtils {
 
             // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
 
-            // create a JSON Object from query results
-            JSONObject root = new JSONObject(SAMPLE_JSON_RESPONSE);
+            // create JSON object from the query results
+            JSONObject quakeRoot = new JSONObject(SAMPLE_JSON_RESPONSE);
 
-            JSONArray quakeArray = root.getJSONArray("features");
+            // create JSON array of quake instances from quakeRoot
+            JSONArray quakeArray = quakeRoot.getJSONArray("features");
 
-            // integrate through and parse each array element
+            // iterate through quakeArray
             for (int i = 0; i < quakeArray.length(); i++) {
 
-                // create a JSON properties object for each array element
-                JSONObject quakeArrayObject = quakeArray.getJSONObject(i);
+                // create JSON object for each quakeArray element
+                JSONObject quakeObject = quakeArray.getJSONObject(i);
 
-                // get properties
-                JSONObject properties = quakeArrayObject.getJSONObject("properties");
+                // create JSON object from 'properties' JSON object
+                JSONObject quakeProperties = quakeObject.getJSONObject("properties");
 
-                // extract values
-                String magnitude = properties.getString("mag");
-                String location = properties.getString("place");
-                String date = properties.getString("time");
+                // extract values from quakeProperties object
+                String mag = quakeProperties.getString("mag");
+                String loc = quakeProperties.getString("place");
+                long date = quakeProperties.optLong("time");
 
-                // create object with values
-                Earthquake quake = new Earthquake(magnitude,location,date);
 
-                // add new object to array list
-                earthquakes.add(quake);
-
+                // create new Earthquake object using extracted values
+                Earthquake quakeInstance = new Earthquake(mag,loc,date, date);
+                earthquakes.add(quakeInstance);
             }
-
 
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,

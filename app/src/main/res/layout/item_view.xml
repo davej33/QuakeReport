@@ -27,4 +27,12 @@
         android:layout_weight="1"
         tools:text="Feb 5, 2014"
     />
+
+    <TextView
+        android:id="@+id/time_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="0800"
+        />
 </LinearLayout>

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by dnj on 10/20/16.
@@ -34,8 +36,16 @@ public class EqAdapter extends ArrayAdapter<Earthquake> {
         TextView location = (TextView) listItemView.findViewById(R.id.location_view);
         location.setText(currentQuake.getmLocation());
 
-        TextView date = (TextView) listItemView.findViewById(R.id.date_view);
-        date.setText(currentQuake.getmDate());
+        Date dateObj = new Date(currentQuake.getmDate());
+        SimpleDateFormat dateForm = new SimpleDateFormat("MMM DD,yyyy");
+        String dateString = dateForm.format(dateObj);
+        TextView dateView = (TextView) listItemView.findViewById(R.id.date_view);
+        dateView.setText(dateString);
+
+        SimpleDateFormat timeForm = new SimpleDateFormat("h MM a");
+        String timeString = timeForm.format(dateObj);
+        TextView time = (TextView) listItemView.findViewById(R.id.time_view);
+        time.setText(timeString);
 
 
         return listItemView;
