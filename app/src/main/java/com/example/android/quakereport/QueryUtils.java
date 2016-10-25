@@ -69,10 +69,11 @@ public final class QueryUtils {
                 Double mag = quakeProperties.getDouble("mag");
                 String loc = quakeProperties.getString("place");
                 long date = quakeProperties.optLong("time");
+                String website = quakeProperties.getString("url");
 
 
                 // create new Earthquake object using extracted values
-                Earthquake quakeInstance = new Earthquake(mag, loc, loc, date, date);
+                Earthquake quakeInstance = new Earthquake(mag, loc, date, website);
                 earthquakes.add(quakeInstance);
             }
 

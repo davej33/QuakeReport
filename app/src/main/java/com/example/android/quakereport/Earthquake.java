@@ -8,15 +8,13 @@ public class Earthquake {
     private Double mMag;
     private String mLocation;
     private long mDate;
-    private long mTime;
-    private String mProximity;
+    private String mUrl;
 
-    public Earthquake(Double mag, String proximity, String location, long date, long time){
+    public Earthquake(Double mag, String location, long date, String Url){
         mMag = mag;
         mLocation = location;
         mDate = date;
-        mTime = time;
-        mProximity = proximity;
+        mUrl = Url;
     }
 
     public Double getmMag(){ return mMag;}
@@ -26,11 +24,7 @@ public class Earthquake {
     public long getmDate(){
         return mDate;}
 
-    public long getmTime() {
-        return mTime;
-    }
-
-    public String getmProximity() {
-        return mProximity;
+    public String getmUrl() {
+        return mUrl;
     }
 }
