@@ -1,6 +1,7 @@
 package com.example.android.quakereport;
 
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,7 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.android.quakereport.EarthquakeActivity.LOG_TAG;
 
@@ -26,21 +29,21 @@ public class QueryUtils {
      * Return a list of {@link Earthquake} objects that has been built up from
      * parsing a JSON response.
      */
-    public ArrayList<Earthquake> extractEarthquakes(String urlString) {
+    public static List<Earthquake> extractEarthquakes(String urlString) {
         URL url = createURL(urlString);
-        String jsonResponse = "";
+        String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
             Log.e(LOG_TAG, "http request error", e);
         }
 
-        ArrayList<Earthquake> quakes = extractData(jsonResponse);
+        List<Earthquake> earthquakes = extractData(jsonResponse);
 
-        return quakes;
+        return earthquakes;
     }
 
-    private URL createURL(String urlString) {
+    private static URL createURL(String urlString) {
         URL url = null;
         try {
             url = new URL(urlString);
@@ -50,41 +53,68 @@ public class QueryUtils {
         return url;
     }
 
-    private String makeHttpRequest(URL url) throws IOException {
+    private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
+        if (url == null) {
+            return jsonResponse;
+        }
+        HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000 /* milliseconds */);
+            urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
+            } else {
+                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "http connection error", e);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (inputStream != null) {
+                // Closing the input stream could throw an IOException, which is why
+                // the makeHttpRequest(URL url) method signature specifies than an IOException
+                // could be thrown.
+                inputStream.close();
+            }
         }
         return jsonResponse;
     }
 
-    private String readFromStream(InputStream inputStream) {
+    private static String readFromStream(InputStream inputStream) {
         StringBuilder output = new StringBuilder();
 
         try {
-            InputStreamReader inputReader = new InputStreamReader(inputStream);
+            InputStreamReader inputReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
             BufferedReader bufferReader = new BufferedReader(inputReader);
             String line = bufferReader.readLine();
             while (line != null) {
                 output.append(line);
                 line = bufferReader.readLine();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(LOG_TAG, "http connection error", e);
         }
 
-            /* TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
+        return output.toString();
+    }
 
-            JSONObject root = new JSONObject();
+    private static List<Earthquake> extractData(String data) {
+        if (TextUtils.isEmpty(data)) {
+            return null;
+        }
+
+        List<Earthquake> quakeArray = new ArrayList<>();
+
+        try {
+            JSONObject root = new JSONObject(data);
             JSONArray features = root.getJSONArray("features");
             for (int i = 0; i < features.length(); i++) {
                 JSONObject instance = features.getJSONObject(i);
@@ -95,13 +125,9 @@ public class QueryUtils {
                 long date = properties.getLong("time");
                 String web = properties.getString("url");
 
-                Earthquake quake = new Earthquake(mag,loc,date,web);
-                earthquakes[i].add(quake);
+                Earthquake quake = new Earthquake(mag, loc, date, web);
+                quakeArray.add(quake);
             }
-
-
-
-
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
@@ -110,7 +136,7 @@ public class QueryUtils {
         }
 
         // Return the list of earthquakes
-        return earthquakes;
+        return quakeArray;
     }
 
 }
