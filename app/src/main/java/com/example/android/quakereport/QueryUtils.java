@@ -26,6 +26,7 @@ import static com.example.android.quakereport.EarthquakeActivity.LOG_TAG;
 public final class QueryUtils {
 
     public static List<Earthquake> fetchData(String urlString) {
+        Log.v(LOG_TAG, "fetch Data");
         URL url = createURL(urlString);
         String jsonResponse = "";
         try {

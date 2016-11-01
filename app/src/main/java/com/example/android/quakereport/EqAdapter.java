@@ -55,7 +55,7 @@ public class EqAdapter extends ArrayAdapter<Earthquake> {
         location.setText(city(currentQuake.getmLocation()));
 
         Date dateObj = new Date(currentQuake.getmDate());
-        SimpleDateFormat dateForm = new SimpleDateFormat("MMM DD,yyyy");
+        SimpleDateFormat dateForm = new SimpleDateFormat("MMM d, yyyy");
         String dateString = dateForm.format(dateObj);
 
         TextView dateView = (TextView) listItemView.findViewById(R.id.date_view);
