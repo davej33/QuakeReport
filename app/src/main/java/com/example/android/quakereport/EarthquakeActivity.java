@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
     private EqAdapter mAdapter;
     private TextView mEmptyTextView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,14 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         setContentView(R.layout.earthquake_activity);
 
         LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(0, null, this);
-        Log.v(LOG_TAG, "initLoader");
-
 
 
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
         mEmptyTextView = (TextView) findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(mEmptyTextView);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar_view);
 
         mAdapter = new EqAdapter(this, new ArrayList<Earthquake>());
         earthquakeListView.setAdapter(mAdapter);
@@ -66,16 +67,21 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             }
         });
 
+        loaderManager.initLoader(0, null, this);
+        Log.v(LOG_TAG, "initLoader");
     }
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
         Log.v(LOG_TAG, "onCreateLoader");
+        mProgressBar.setVisibility(View.VISIBLE);
         return new EarthquakeLoader(this, USGS_URL);
     }
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> data) {
+
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.clear();
 
         if( data != null && !data.isEmpty()){
